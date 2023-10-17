@@ -46,7 +46,11 @@ def main(args=None):
 
     state_publisher = FakeGripperStatePublisher()
 
-    rclpy.spin(state_publisher)
+    try:
+        rclpy.spin(state_publisher)
+    except KeyboardInterrupt:
+        pass
+
     state_publisher.destroy_node()
     rclpy.shutdown()
 
