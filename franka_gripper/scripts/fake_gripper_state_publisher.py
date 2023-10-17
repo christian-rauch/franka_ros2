@@ -15,6 +15,8 @@
 
 import rclpy
 from rclpy.node import Node
+from rclpy.action import ActionServer
+from control_msgs.action import GripperCommand
 
 from sensor_msgs.msg import JointState
 
@@ -30,6 +32,8 @@ class FakeGripperStatePublisher(Node):
             'joint_names').get_parameter_value().string_array_value
         assert len(self.joint_names) == 2
         self.timer = self.create_timer(timer_period, self.publish_state)
+        self.srv_grasp_ = ActionServer(self, GripperCommand, '~/gripper_action', lambda g : GripperCommand.Result())
+
 
     def publish_state(self):
         joint_states = JointState()
