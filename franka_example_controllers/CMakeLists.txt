@@ -24,7 +24,7 @@ find_package(franka_msgs REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Franka REQUIRED)
 find_package(franka_semantic_components)
-find_package(generate_parameter_library)
+find_package(generate_parameter_library REQUIRED)
 
 add_library(
         ${PROJECT_NAME}
