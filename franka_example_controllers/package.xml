@@ -15,7 +15,8 @@
   <depend>rclcpp_lifecycle</depend>
   <depend>franka_msgs</depend>
   <depend>franka_semantic_components</depend>
-  
+
+  <build_depend>eigen</build_depend>
 
   <test_depend>ament_cmake_clang_format</test_depend>
   <test_depend>ament_cmake_copyright</test_depend>
