@@ -26,6 +26,7 @@
   <test_depend>ament_cmake_cppcheck</test_depend>
   <test_depend>ament_cmake_flake8</test_depend>
   <test_depend>ament_cmake_lint_cmake</test_depend>
+  <test_depend>ament_cmake_pep257</test_depend>
   <test_depend>ament_cmake_gmock</test_depend>
   <test_depend>controller_manager</test_depend>
   <test_depend>hardware_interface</test_depend>
