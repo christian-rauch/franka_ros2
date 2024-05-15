@@ -12,7 +12,7 @@ endif()
 
 option(CHECK_TIDY "Adds clang-tidy tests" OFF)
 
-set(THIS_PACKAGE_INCLUDE_DEPENDS franka_hardware franka_msgs hardware_interface rclcpp_lifecycle)
+set(THIS_PACKAGE_INCLUDE_DEPENDS Franka franka_hardware franka_msgs hardware_interface rclcpp_lifecycle)
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
@@ -20,14 +20,10 @@ foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
   find_package(${Dependency} REQUIRED)
 endforeach()
 
-find_package(Franka REQUIRED)
-
 add_library(franka_semantic_components SHARED src/franka_robot_state.cpp src/franka_robot_model.cpp)
 target_include_directories(franka_semantic_components PRIVATE include)
 target_link_libraries(franka_semantic_components Franka::Franka)
-ament_target_dependencies(franka_semantic_components
-                          Franka
-                          ${THIS_PACKAGE_INCLUDE_DEPENDS})
+ament_target_dependencies(franka_semantic_components ${THIS_PACKAGE_INCLUDE_DEPENDS})
 
 install(TARGETS franka_semantic_components DESTINATION lib)
 install(DIRECTORY include/ DESTINATION include)
