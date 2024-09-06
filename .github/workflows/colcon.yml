@@ -1,0 +1,36 @@
+name: colcon
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        distribution: ["humble", "jazzy"]
+
+    container:
+      image: ros:${{ matrix.distribution }}-ros-core
+
+    steps:
+    - name: install dependencies
+      run: |
+        apt update
+        apt install -y --no-install-recommends python3-rosdep python3-vcstool python3-colcon-common-extensions
+        apt install -y --no-install-recommends git build-essential
+        rosdep init
+
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: .github/workflows/libfranka.repos
+        sparse-checkout-cone-mode: false
+
+    - uses: ros-tooling/action-ros-ci@v0.3
+      with:
+        target-ros2-distro: ${{ matrix.distribution }}
+        vcs-repo-file-url: ${{ github.workspace }}/.github/workflows/libfranka.repos
+        skip-tests: true
+        extra-cmake-args: "-D BUILD_TESTS=OFF -D BUILD_TESTING=OFF -D BUILD_EXAMPLES=OFF"
