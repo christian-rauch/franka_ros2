@@ -681,6 +681,7 @@ controller_interface::CallbackReturn JointTrajectoryController::on_configure(
 
   state_publisher_->lock();
   state_publisher_->msg_.joint_names = params_.joints;
+#if control_msgs_VERSION_MAJOR == 4
   state_publisher_->msg_.desired.positions.resize(dof_);
   state_publisher_->msg_.desired.velocities.resize(dof_);
   state_publisher_->msg_.desired.accelerations.resize(dof_);
@@ -696,6 +697,23 @@ controller_interface::CallbackReturn JointTrajectoryController::on_configure(
     state_publisher_->msg_.actual.accelerations.resize(dof_);
     state_publisher_->msg_.error.accelerations.resize(dof_);
   }
+#elif control_msgs_VERSION_MAJOR >= 5
+  state_publisher_->msg_.reference.positions.resize(dof_);
+  state_publisher_->msg_.reference.velocities.resize(dof_);
+  state_publisher_->msg_.reference.accelerations.resize(dof_);
+  state_publisher_->msg_.feedback.positions.resize(dof_);
+  state_publisher_->msg_.error.positions.resize(dof_);
+  if (has_velocity_state_interface_)
+  {
+    state_publisher_->msg_.feedback.velocities.resize(dof_);
+    state_publisher_->msg_.error.velocities.resize(dof_);
+  }
+  if (has_acceleration_state_interface_)
+  {
+    state_publisher_->msg_.feedback.accelerations.resize(dof_);
+    state_publisher_->msg_.error.accelerations.resize(dof_);
+  }
+#endif
   state_publisher_->unlock();
 
   last_state_publish_time_ = get_node()->now();
@@ -908,6 +926,7 @@ void JointTrajectoryController::publish_state(
   {
     last_state_publish_time_ = get_node()->now();
     state_publisher_->msg_.header.stamp = last_state_publish_time_;
+#if control_msgs_VERSION_MAJOR == 4
     state_publisher_->msg_.desired.positions = desired_state.positions;
     state_publisher_->msg_.desired.velocities = desired_state.velocities;
     state_publisher_->msg_.desired.accelerations = desired_state.accelerations;
@@ -923,6 +942,23 @@ void JointTrajectoryController::publish_state(
       state_publisher_->msg_.actual.accelerations = current_state.accelerations;
       state_publisher_->msg_.error.accelerations = state_error.accelerations;
     }
+#elif control_msgs_VERSION_MAJOR >= 5
+    state_publisher_->msg_.reference.positions = desired_state.positions;
+    state_publisher_->msg_.reference.velocities = desired_state.velocities;
+    state_publisher_->msg_.reference.accelerations = desired_state.accelerations;
+    state_publisher_->msg_.feedback.positions = current_state.positions;
+    state_publisher_->msg_.error.positions = state_error.positions;
+    if (has_velocity_state_interface_)
+    {
+      state_publisher_->msg_.feedback.velocities = current_state.velocities;
+      state_publisher_->msg_.error.velocities = state_error.velocities;
+    }
+    if (has_acceleration_state_interface_)
+    {
+      state_publisher_->msg_.feedback.accelerations = current_state.accelerations;
+      state_publisher_->msg_.error.accelerations = state_error.accelerations;
+    }
+#endif
 
     state_publisher_->unlockAndPublish();
   }

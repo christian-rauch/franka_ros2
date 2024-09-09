@@ -55,6 +55,9 @@ ament_target_dependencies(joint_trajectory_controller PUBLIC ${THIS_PACKAGE_INCL
 target_compile_definitions(joint_trajectory_controller PRIVATE "JOINT_TRAJECTORY_CONTROLLER_BUILDING_DLL" "_USE_MATH_DEFINES")
 pluginlib_export_plugin_description_file(controller_interface joint_trajectory_plugin.xml)
 
+# forward 'control_msgs' major version to handle different API
+target_compile_definitions(joint_trajectory_controller PUBLIC control_msgs_VERSION_MAJOR=${control_msgs_VERSION_MAJOR})
+
 if(BUILD_TESTING)
   find_package(ament_cmake_gmock REQUIRED)
   find_package(controller_manager REQUIRED)

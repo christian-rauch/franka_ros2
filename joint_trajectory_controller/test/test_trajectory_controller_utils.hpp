@@ -388,7 +388,11 @@ public:
       // TODO(anyone): add checking for velocties and accelerations
       if (traj_controller_->has_position_command_interface())
       {
+#if control_msgs_VERSION_MAJOR == 4
         EXPECT_NEAR(expected_actual.positions[i], state_msg->actual.positions[i], allowed_delta);
+#elif control_msgs_VERSION_MAJOR >= 5
+        EXPECT_NEAR(expected_actual.positions[i], state_msg->feedback.positions[i], allowed_delta);
+#endif
       }
     }
 
@@ -398,7 +402,11 @@ public:
       // TODO(anyone): add checking for velocties and accelerations
       if (traj_controller_->has_position_command_interface())
       {
+#if control_msgs_VERSION_MAJOR == 4
         EXPECT_NEAR(expected_desired.positions[i], state_msg->desired.positions[i], allowed_delta);
+#elif control_msgs_VERSION_MAJOR >= 5
+        EXPECT_NEAR(expected_desired.positions[i], state_msg->reference.positions[i], allowed_delta);
+#endif
       }
     }
   }
