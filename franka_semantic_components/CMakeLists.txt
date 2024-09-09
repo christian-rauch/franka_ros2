@@ -12,7 +12,7 @@ endif()
 
 option(CHECK_TIDY "Adds clang-tidy tests" OFF)
 
-set(THIS_PACKAGE_INCLUDE_DEPENDS Franka franka_hardware franka_msgs hardware_interface rclcpp_lifecycle)
+set(THIS_PACKAGE_INCLUDE_DEPENDS Franka franka_hardware franka_msgs hardware_interface controller_interface rclcpp_lifecycle)
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
@@ -36,9 +36,7 @@ if(BUILD_TESTING)
   find_package(ament_cmake_lint_cmake REQUIRED)
   find_package(ament_cmake_pep257 REQUIRED)
   find_package(ament_cmake_xmllint REQUIRED)
-  find_package(franka_msgs REQUIRED)
   find_package(ament_cmake_gmock REQUIRED)
-  find_package(controller_interface REQUIRED)
 
   set(CPP_DIRECTORIES src include)
   ament_clang_format(CONFIG_FILE ../.clang-format ${CPP_DIRECTORIES})
