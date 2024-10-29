@@ -106,9 +106,7 @@ if(BUILD_TESTING)
     ament_add_gmock(test_load_franka_robot_state_broadcaster test/test_load_franka_robot_state_broadcaster.cpp)
     target_include_directories(test_load_franka_robot_state_broadcaster PRIVATE include)
     target_link_libraries(test_load_franka_robot_state_broadcaster ${PROJECT_NAME})
-    ament_target_dependencies(
-      test_load_franka_robot_state_broadcaster controller_manager hardware_interface
-      ros2_control_test_assets)
+    ament_target_dependencies(test_load_franka_robot_state_broadcaster controller_manager)
 endif()
 
 ament_export_include_directories(
