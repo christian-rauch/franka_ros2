@@ -18,6 +18,7 @@
 #include "franka_robot_state_broadcaster/franka_robot_state_broadcaster.hpp"
 #include "hardware_interface/types/hardware_interface_return_values.hpp"
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
+#include "ros2_control_test_assets/descriptions.hpp"
 #include "rclcpp/rclcpp.hpp"
 
 using namespace franka_robot_state_broadcaster;
@@ -26,7 +27,15 @@ class TestFrankaRobotStateBroadcaster : public ::testing::Test {
  protected:
   void SetUp() override {
     broadcaster_ = std::make_unique<FrankaRobotStateBroadcaster>();
-    broadcaster_->init("test_broadcaster");
+    broadcaster_->init(
+      "test_broadcaster"
+#if controller_interface_VERSION_MAJOR >= 4
+    , ros2_control_test_assets::minimal_robot_urdf      // urdf
+    , 0                                                 // cm_update_rate
+    , {}                                                // node_namespace
+    , rclcpp::NodeOptions().enable_logger_service(true) // node_options
+#endif
+    );
   }
 
   std::unique_ptr<FrankaRobotStateBroadcaster> broadcaster_;
