@@ -23,6 +23,7 @@
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "rclcpp/utilities.hpp"
 #include "rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp"
+#include "ros2_control_test_assets/descriptions.hpp"
 
 using hardware_interface::CommandInterface;
 using hardware_interface::HW_IF_EFFORT;
@@ -73,7 +74,15 @@ void TestGravityCompensationExample::TearDown() {
 }
 
 void TestGravityCompensationExample::SetUpController() {
-  const auto result = controller_->init("test_gravitiy_compensation_example");
+  const auto result = controller_->init(
+    "test_gravitiy_compensation_example"
+#if controller_interface_VERSION_MAJOR >= 4
+    , ros2_control_test_assets::minimal_robot_urdf      // urdf
+    , 0                                                 // cm_update_rate
+    , {}                                                // node_namespace
+    , rclcpp::NodeOptions().enable_logger_service(true) // node_options
+#endif
+  );
   ASSERT_EQ(result, controller_interface::return_type::OK);
   std::vector<LoanedCommandInterface> command_ifs;
   command_ifs.emplace_back(joint_1_pos_cmd_);

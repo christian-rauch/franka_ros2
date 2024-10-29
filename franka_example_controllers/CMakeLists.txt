@@ -111,10 +111,20 @@ if(BUILD_TESTING)
     ament_add_gmock(${PROJECT_NAME}_gravity_test test/test_gravity_compensation_example.cpp)
     target_include_directories(${PROJECT_NAME}_gravity_test PRIVATE include)
     target_link_libraries(${PROJECT_NAME}_gravity_test ${PROJECT_NAME})
+    ament_target_dependencies(${PROJECT_NAME}_gravity_test controller_manager ros2_control_test_assets)
+    target_compile_definitions(
+        ${PROJECT_NAME}_gravity_test
+        PUBLIC controller_interface_VERSION_MAJOR=${controller_interface_VERSION_MAJOR}
+    )
 
     ament_add_gmock(${PROJECT_NAME}_move_to_start_test test/test_move_to_start_example_controller.cpp)
     target_include_directories(${PROJECT_NAME}_move_to_start_test PRIVATE include)
     target_link_libraries(${PROJECT_NAME}_move_to_start_test ${PROJECT_NAME})
+    ament_target_dependencies(${PROJECT_NAME}_move_to_start_test controller_manager ros2_control_test_assets)
+    target_compile_definitions(
+        ${PROJECT_NAME}_move_to_start_test
+        PUBLIC controller_interface_VERSION_MAJOR=${controller_interface_VERSION_MAJOR}
+    )
 
     if(CHECK_TIDY)
         find_package(ament_cmake_clang_tidy REQUIRED)
