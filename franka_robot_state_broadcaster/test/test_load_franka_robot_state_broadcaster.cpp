@@ -16,7 +16,6 @@
 #include <memory>
 
 #include "controller_manager/controller_manager.hpp"
-#include "rclcpp/executor.hpp"
 #include "rclcpp/executors/single_threaded_executor.hpp"
 #include "rclcpp/utilities.hpp"
 
