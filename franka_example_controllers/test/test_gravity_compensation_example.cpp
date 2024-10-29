@@ -93,6 +93,8 @@ void TestGravityCompensationExample::SetUpController() {
   command_ifs.emplace_back(joint_6_pos_cmd_);
   command_ifs.emplace_back(joint_7_pos_cmd_);
 
+  controller_->get_node()->declare_parameter("joints", std::vector<std::string>{});
+
   controller_->assign_interfaces(std::move(command_ifs), {});
 }
 
