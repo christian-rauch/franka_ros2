@@ -109,6 +109,9 @@ if(BUILD_TESTING)
         ${PROJECT_NAME}_gravity_test
         PUBLIC controller_interface_VERSION_MAJOR=${controller_interface_VERSION_MAJOR}
     )
+    if(${hardware_interface_VERSION} VERSION_GREATER_EQUAL "4.20")
+        target_compile_definitions(${PROJECT_NAME}_gravity_test PRIVATE HW_HAS_GET_BY_REF)
+    endif()
 
     ament_add_gmock(${PROJECT_NAME}_move_to_start_test test/test_move_to_start_example_controller.cpp)
     target_include_directories(${PROJECT_NAME}_move_to_start_test PRIVATE include)
@@ -118,6 +121,9 @@ if(BUILD_TESTING)
         ${PROJECT_NAME}_move_to_start_test
         PUBLIC controller_interface_VERSION_MAJOR=${controller_interface_VERSION_MAJOR}
     )
+    if(${hardware_interface_VERSION} VERSION_GREATER_EQUAL "4.20")
+        target_compile_definitions(${PROJECT_NAME}_move_to_start_test PRIVATE HW_HAS_GET_BY_REF)
+    endif()
 
     if(CHECK_TIDY)
         find_package(ament_cmake_clang_tidy REQUIRED)

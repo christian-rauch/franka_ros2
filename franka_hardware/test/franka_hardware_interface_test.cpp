@@ -137,7 +137,13 @@ TEST(
     } else {
       EXPECT_EQ(states[i].get_name(), joint_name + "/" + k_effort_controller);
     }
-    EXPECT_EQ(states[i].get_value(), 0.0);
+#ifdef HW_HAS_GET_BY_REF
+    double val = 0;
+    EXPECT_TRUE(states[i].get_value(val));
+#else
+    const double val = states[i].get_value();
+#endif
+    EXPECT_EQ(val, 0.0);
   }
 
   EXPECT_EQ(states.size(), state_interface_size);
@@ -167,8 +173,13 @@ TEST(
   auto states = franka_hardware_interface.export_state_interfaces();
   EXPECT_EQ(states[state_interface_size - 1].get_name(),
             "panda/robot_model");  // Last state interface is the robot model state
-  EXPECT_NEAR(states[state_interface_size - 1].get_value(),
-              *reinterpret_cast<double*>(&model_address),
+#ifdef HW_HAS_GET_BY_REF
+  double val = 0;
+  EXPECT_TRUE(states[state_interface_size - 1].get_value(val));
+#else
+  const double val = states[state_interface_size - 1].get_value();
+#endif
+  EXPECT_NEAR(val, *reinterpret_cast<double*>(&model_address),
               k_EPS);  // testing that the casted mock_model ptr
                        // is correctly pushed to state interface
 }
@@ -199,8 +210,13 @@ TEST(
   auto states = franka_hardware_interface.export_state_interfaces();
   EXPECT_EQ(states[state_interface_size - 2].get_name(),
             "panda/robot_state");  // Last state interface is the robot model state
-  EXPECT_NEAR(states[state_interface_size - 2].get_value(),
-              *reinterpret_cast<double*>(&robot_state_address),
+#ifdef HW_HAS_GET_BY_REF
+  double val = 0;
+  EXPECT_TRUE(states[state_interface_size - 2].get_value(val));
+#else
+  const double val = states[state_interface_size - 2].get_value();
+#endif
+  EXPECT_NEAR(val, *reinterpret_cast<double*>(&robot_state_address),
               k_EPS);  // testing that the casted robot state ptr
                        // is correctly pushed to state interface
 }

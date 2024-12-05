@@ -29,6 +29,16 @@ using hardware_interface::CommandInterface;
 using hardware_interface::HW_IF_EFFORT;
 using hardware_interface::LoanedCommandInterface;
 
+void assert_val_eq(const CommandInterface& cmdintf) {
+#ifdef HW_HAS_GET_BY_REF
+  double val = 0;
+  EXPECT_TRUE(cmdintf.get_value(val));
+#else
+  const double val = cmdintf.get_value();
+#endif
+  ASSERT_EQ(val, 0.0);
+}
+
 class TestGravityCompensationExample : public ::testing::Test {
  public:
   static void SetUpTestSuite();
@@ -137,11 +147,11 @@ TEST_F(TestGravityCompensationExample, given_joints_and_interface_when_update_ex
             controller_interface::return_type::OK);
 
   // check joint commands are updated to zero torque value
-  ASSERT_EQ(joint_1_pos_cmd_.get_value(), 0.0);
-  ASSERT_EQ(joint_2_pos_cmd_.get_value(), 0.0);
-  ASSERT_EQ(joint_3_pos_cmd_.get_value(), 0.0);
-  ASSERT_EQ(joint_4_pos_cmd_.get_value(), 0.0);
-  ASSERT_EQ(joint_5_pos_cmd_.get_value(), 0.0);
-  ASSERT_EQ(joint_6_pos_cmd_.get_value(), 0.0);
-  ASSERT_EQ(joint_7_pos_cmd_.get_value(), 0.0);
+  assert_val_eq(joint_1_pos_cmd_);
+  assert_val_eq(joint_2_pos_cmd_);
+  assert_val_eq(joint_3_pos_cmd_);
+  assert_val_eq(joint_4_pos_cmd_);
+  assert_val_eq(joint_5_pos_cmd_);
+  assert_val_eq(joint_6_pos_cmd_);
+  assert_val_eq(joint_7_pos_cmd_);
 }

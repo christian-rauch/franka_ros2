@@ -26,6 +26,16 @@
 
 const double k_EPS = 1e-5;
 
+void exp_val_near(const CommandInterface& cmdintf) {
+#ifdef HW_HAS_GET_BY_REF
+  double val = 0;
+  EXPECT_TRUE(cmdintf.get_value(val));
+#else
+  const double val = cmdintf.get_value();
+#endif
+  EXPECT_NEAR(val, 0.0, k_EPS);
+}
+
 void MoveToStartExampleControllerTest::SetUpTestSuite() {
   rclcpp::init(0, nullptr);
 }
@@ -136,11 +146,11 @@ TEST_F(MoveToStartExampleControllerTest, correct_setup_on_update_expect_ok) {
 
   ASSERT_EQ(controller_->update(time, duration), controller_interface::return_type::OK);
 
-  EXPECT_NEAR(joint_1_pos_cmd_.get_value(), 0.0, k_EPS);
-  EXPECT_NEAR(joint_2_pos_cmd_.get_value(), 0.0, k_EPS);
-  EXPECT_NEAR(joint_3_pos_cmd_.get_value(), 0.0, k_EPS);
-  EXPECT_NEAR(joint_4_pos_cmd_.get_value(), 0.0, k_EPS);
-  EXPECT_NEAR(joint_5_pos_cmd_.get_value(), 0.0, k_EPS);
-  EXPECT_NEAR(joint_6_pos_cmd_.get_value(), 0.0, k_EPS);
-  EXPECT_NEAR(joint_7_pos_cmd_.get_value(), 0.0, k_EPS);
+  exp_val_near(joint_1_pos_cmd_);
+  exp_val_near(joint_2_pos_cmd_);
+  exp_val_near(joint_3_pos_cmd_);
+  exp_val_near(joint_4_pos_cmd_);
+  exp_val_near(joint_5_pos_cmd_);
+  exp_val_near(joint_6_pos_cmd_);
+  exp_val_near(joint_7_pos_cmd_);
 }
