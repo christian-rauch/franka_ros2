@@ -54,6 +54,10 @@ generate_parameter_library(franka_example_controllers_parameters src/model_examp
 
 target_link_libraries(${PROJECT_NAME} franka_example_controllers_parameters Franka::Franka)
 
+if(${hardware_interface_VERSION} VERSION_GREATER_EQUAL "4.20")
+    target_compile_definitions(${PROJECT_NAME} PRIVATE HW_HAS_SET_NODISCARD)
+endif()
+
 pluginlib_export_plugin_description_file(
         controller_interface franka_example_controllers.xml)
 

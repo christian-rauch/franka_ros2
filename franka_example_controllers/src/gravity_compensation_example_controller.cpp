@@ -39,7 +39,12 @@ controller_interface::return_type GravityCompensationExampleController::update(
     const rclcpp::Time& /*time*/,
     const rclcpp::Duration& /*period*/) {
   for (auto& command_interface : command_interfaces_) {
+#ifdef HW_HAS_SET_NODISCARD
+    if (!command_interface.set_value(0))
+      return controller_interface::return_type::ERROR;
+#else
     command_interface.set_value(0);
+#endif
   }
   return controller_interface::return_type::OK;
 }

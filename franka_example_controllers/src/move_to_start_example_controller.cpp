@@ -59,11 +59,21 @@ controller_interface::return_type MoveToStartExampleController::update(
     Vector7d tau_d_calculated =
         k_gains_.cwiseProduct(q_desired - q_) + d_gains_.cwiseProduct(-dq_filtered_);
     for (int i = 0; i < 7; ++i) {
+#ifdef HW_HAS_SET_NODISCARD
+      if (!command_interfaces_[i].set_value(tau_d_calculated(i)))
+        return controller_interface::return_type::ERROR;
+#else
       command_interfaces_[i].set_value(tau_d_calculated(i));
+#endif
     }
   } else {
     for (auto& command_interface : command_interfaces_) {
+#ifdef HW_HAS_SET_NODISCARD
+      if (!command_interface.set_value(0))
+        return controller_interface::return_type::ERROR;
+#else
       command_interface.set_value(0);
+#endif
     }
     this->get_node()->set_parameter({"process_finished", true});
   }

@@ -60,7 +60,12 @@ controller_interface::return_type JointImpedanceExampleController::update(
   Vector7d tau_d_calculated =
       k_gains_.cwiseProduct(q_goal - q_) + d_gains_.cwiseProduct(-dq_filtered_);
   for (int i = 0; i < num_joints; ++i) {
+#ifdef HW_HAS_SET_NODISCARD
+    if (!command_interfaces_[i].set_value(tau_d_calculated(i)))
+      return controller_interface::return_type::ERROR;
+#else
     command_interfaces_[i].set_value(tau_d_calculated(i));
+#endif
   }
   return controller_interface::return_type::OK;
 }
