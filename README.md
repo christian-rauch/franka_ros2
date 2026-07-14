@@ -1,6 +1,6 @@
 # ROS 2 integration for Franka Emika research robots
 
-[![CI](https://github.com/frankaemika/franka_ros2/actions/workflows/ci.yml/badge.svg)](https://github.com/frankaemika/franka_ros2/actions/workflows/ci.yml)
+[![CI](https://github.com/mul-cps/franka_ros2/actions/workflows/colcon.yml/badge.svg)](https://github.com/mul-cps/franka_ros2/actions/workflows/colcon.yml)
 
 See the [Franka Control Interface (FCI) documentation][fci-docs] for more information.
 
