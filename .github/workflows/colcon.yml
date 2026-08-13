@@ -12,6 +12,7 @@ jobs:
       matrix:
         include:
         - {ubuntu: noble, ros: "jazzy"}
+        - {ubuntu: resolute, ros: "lyrical"}
 
     container:
       image: ubuntu:${{ matrix.ubuntu }}
