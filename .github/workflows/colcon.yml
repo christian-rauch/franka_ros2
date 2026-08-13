@@ -11,19 +11,13 @@ jobs:
     strategy:
       matrix:
         include:
-        - {distribution: "jazzy", WARNING_AS_ERROR: "ON"}
+        - {ubuntu: noble, ros: "jazzy"}
 
     container:
-      image: ros:${{ matrix.distribution }}-ros-core
+      image: ubuntu:${{ matrix.ubuntu }}
 
     steps:
-    - name: install dependencies
-      run: |
-        apt update
-        apt install -y --no-install-recommends python3-rosdep python3-vcstool python3-colcon-common-extensions
-        apt install -y --no-install-recommends python3-colcon-coveragepy-result python3-colcon-lcov-result lcov
-        apt install -y --no-install-recommends git build-essential
-        rosdep init
+    - uses: ros-tooling/setup-ros@v0.7
 
     - uses: actions/checkout@v7
       with:
@@ -32,6 +26,6 @@ jobs:
 
     - uses: ros-tooling/action-ros-ci@v0.4
       with:
-        target-ros2-distro: ${{ matrix.distribution }}
+        target-ros2-distro: ${{ matrix.ros }}
         vcs-repo-file-url: ${{ github.workspace }}/.github/workflows/libfranka.repos
-        extra-cmake-args: "-D CMAKE_BUILD_TYPE=Release -D BUILD_EXAMPLES=OFF -D CMAKE_COMPILE_WARNING_AS_ERROR=${{ matrix.WARNING_AS_ERROR }}"
+        extra-cmake-args: "-D CMAKE_BUILD_TYPE=Release -D BUILD_EXAMPLES=OFF -D CMAKE_COMPILE_WARNING_AS_ERROR=ON"
