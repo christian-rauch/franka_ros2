@@ -97,7 +97,6 @@ def generate_launch_description():
             package='controller_manager',
             executable='ros2_control_node',
             parameters=[{'robot_description': robot_description}, franka_controllers],
-            remappings=[('joint_states', 'franka/joint_states')],
             output={
                 'stdout': 'screen',
                 'stderr': 'screen',
@@ -107,13 +106,20 @@ def generate_launch_description():
         Node(
             package='controller_manager',
             executable='spawner',
-            arguments=['joint_state_broadcaster'],
+            arguments=[
+                '--param-file', franka_controllers,
+                '--controller-ros-args', '--remap joint_states:=/franka/joint_states',
+                'joint_state_broadcaster',
+            ],
             output='screen',
         ),
         Node(
             package='controller_manager',
             executable='spawner',
-            arguments=['franka_robot_state_broadcaster'],
+            arguments=[
+                '--param-file', franka_controllers,
+                'franka_robot_state_broadcaster',
+            ],
             output='screen',
             condition=UnlessCondition(use_fake_hardware),
         ),

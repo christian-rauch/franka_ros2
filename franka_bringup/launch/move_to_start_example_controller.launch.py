@@ -83,7 +83,11 @@ def generate_launch_description():
             Node(
                 package='controller_manager',
                 executable='spawner',
-                arguments=['move_to_start_example_controller'],
+                arguments=[
+                    '--param-file', PathJoinSubstitution(
+                        [FindPackageShare('franka_bringup'), 'config', 'controllers.yaml']),
+                    'move_to_start_example_controller',
+                ],
                 output='screen',
             ),
         ]

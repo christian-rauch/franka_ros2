@@ -19,7 +19,7 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import (DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription,
+from launch.actions import (DeclareLaunchArgument, IncludeLaunchDescription,
                             SetEnvironmentVariable, Shutdown)
 from launch.conditions import UnlessCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -221,7 +221,6 @@ def generate_launch_description():
         package='controller_manager',
         executable='ros2_control_node',
         parameters=[robot_description, ros2_controllers_path],
-        remappings=[('joint_states', 'franka/joint_states')],
         output={
             'stdout': 'screen',
             'stderr': 'screen',
@@ -232,15 +231,17 @@ def generate_launch_description():
     env_lc = SetEnvironmentVariable(name='LC_NUMERIC', value='C')
 
     # Load controllers
-    load_controllers = []
-    for controller in ['panda_arm_controller', 'joint_state_broadcaster']:
-        load_controllers += [
-            ExecuteProcess(
-                cmd=['ros2 run controller_manager spawner {}'.format(controller)],
-                shell=True,
-                output='screen',
-            )
-        ]
+    franka_controllers = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=[
+            '--param-file', ros2_controllers_path,
+            '--controller-ros-args', '--remap joint_states:=/franka/joint_states',
+            'panda_arm_controller',
+            'joint_state_broadcaster',
+        ],
+        output='screen',
+    )
 
     joint_state_publisher = Node(
         package='joint_state_publisher',
@@ -251,11 +252,14 @@ def generate_launch_description():
     )
 
     franka_robot_state_broadcaster = Node(
-            package='controller_manager',
-            executable='spawner',
-            arguments=['franka_robot_state_broadcaster'],
-            output='screen',
-            condition=UnlessCondition(use_fake_hardware),
+        package='controller_manager',
+        executable='spawner',
+        arguments=[
+            '--param-file', ros2_controllers_path,
+            'franka_robot_state_broadcaster',
+        ],
+        output='screen',
+        condition=UnlessCondition(use_fake_hardware),
     )
 
     robot_arg = DeclareLaunchArgument(
@@ -288,8 +292,8 @@ def generate_launch_description():
          run_move_group_node,
          ros2_control_node,
          joint_state_publisher,
+         franka_controllers,
          franka_robot_state_broadcaster,
          gripper_launch_file,
          ]
-        + load_controllers
     )
